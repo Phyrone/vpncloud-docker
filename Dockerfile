@@ -7,4 +7,5 @@ RUN ls /out
 FROM alpine
 COPY --from=builder /out/vpncloud /usr/local/bin
 RUN apk add --no-cache libgcc
-ENTRYPOINT ["vpncloud"]
+CMD ["/usr/local/bin/vpncloud"]
+#ENTRYPOINT ["vpncloud"]
