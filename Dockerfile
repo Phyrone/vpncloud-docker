@@ -6,5 +6,7 @@ RUN cargo build --release
 
 FROM debian:buster-slim
 COPY --from=build-vpncloud /build/target/release/vpncloud /usr/local/bin/vpncloud
-
-CMD ["/usr/local/bin/vpncloud","--help"]
+ENV VPNCLOUD_PORT=28111
+ENV VPNCLOUD_PASSWORD=changeme
+ENV VPNCLOUD_PEERS=""
+CMD ["/usr/local/bin/vpncloud","--password","$VPNCLOUD_PASSWORD","--port","$VPNCLOUD_PORT","--peer","$VPNCLOUD_PEERS"]
