@@ -1,0 +1,17 @@
+version: "3.3"
+services:
+  vpncloud:
+    build:
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./example.config.yml:/vpncloud/config.yml:ro
+    command: vpncloud --config /vpncloud/config.yml
+    network_mode: host
+    ports:
+      #- "28111:28111"
+      - "28111:28111/udp"
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    devices:
+      - /dev/net/tun
