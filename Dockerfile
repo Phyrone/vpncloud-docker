@@ -1,12 +1,10 @@
-FROM rust as builder
-RUN cargo install vpncloud
-RUN mkdir /out
-RUN whereis vpncloud
-RUN cp "$(whereis vpncloud | cut -d ' ' -f 2)" /out
-RUN ls /out
-FROM alpine
-COPY --from=builder /out/vpncloud /usr/local/bin
-RUN chmod 555 /usr/local/bin/vpncloud
-RUN apk add --no-cache libgcc
-CMD ["/usr/local/bin/vpncloud"]
-#ENTRYPOINT ["vpncloud"]
+FROM rust:buster as build-vpncloud
+WORKDIR /build/
+RUN apt update && apt install -y git libc6
+RUN git clone https://github.com/dswd/vpncloud.git .
+RUN cargo build --release
+
+FROM debian:buster-slim
+COPY --from=build-vpncloud /build/target/release/vpncloud /usr/local/bin/vpncloud
+
+CMD ["/usr/local/bin/vpncloud","--help"]
